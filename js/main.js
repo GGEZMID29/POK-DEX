@@ -1,5 +1,6 @@
 const listaPokemon = document.querySelector("#listaPokemon");
 const botonesHeader = document.querySelectorAll(".btn-header");
+const searchInput = document.querySelector("#searchInput");
 let URL = "https://pokeapi.co/api/v2/pokemon/";
 
 let pokemones = [];
@@ -17,7 +18,7 @@ Promise.all(
 function mostrarPokemones(pokemones) {
     listaPokemon.innerHTML = ""; // Limpiar lista anterior
 
-    // Ordenar por ID para asegurarnos de que estén en orden
+    // Ordenar por ID para que estén en orden
     pokemones.sort((a, b) => a.id - b.id);
 
     pokemones.forEach(poke => mostrarPokemon(poke));
@@ -58,6 +59,21 @@ function mostrarPokemon(poke) {
     listaPokemon.append(div);
 }
 
+// Escuchar los cambios en el campo de búsqueda
+searchInput.addEventListener("input", (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+
+    // Filtrar por nombre o número
+    const pokemonesFiltrados = pokemones.filter(poke => {
+        const pokeName = poke.name.toLowerCase();
+        const pokeId = poke.id.toString();
+        return pokeName.includes(searchTerm) || pokeId.includes(searchTerm);
+    });
+
+    // Mostrar los Pokémon filtrados
+    mostrarPokemones(pokemonesFiltrados);
+});
+
 // Manejo de botones
 botonesHeader.forEach(boton => boton.addEventListener("click", (event) => {
     const botonId = event.currentTarget.id;
@@ -73,6 +89,3 @@ botonesHeader.forEach(boton => boton.addEventListener("click", (event) => {
         mostrarPokemones(pokemonesFiltrados); // Mostrar Pokémon filtrados por tipo
     }
 }));
-
-
-
